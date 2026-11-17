@@ -209,11 +209,19 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
              aggregate = "cluster", round = roundArea,
              outputStatistics = stats, file = paste0("wdpa_baseline_", ctype, ".mz"))
 
-  calcOutput("ConservationPriorities", nclasses = "seven", cells = cells,
+  # conservation priority areas including the BTC2 option
+  calcOutput("ConservationPrioritiesBTC2", cells = cells,
              aggregate = FALSE, round = NULL, outputStatistics = stats, file = "consv_prio_areas_0.5.mz")
-  calcOutput("ConservationPriorities", nclasses = "seven", cells = cells,
+  calcOutput("ConservationPrioritiesBTC2", cells = cells,
              aggregate = "cluster", round = roundArea,
              outputStatistics = stats, file = paste0("consv_prio_areas_", ctype, ".mz"))
+
+  # BTC2 reconversion targets of agricultural land and managed forest
+  calcOutput("ReconversionTargetsBTC2", cells = cells,
+             aggregate = FALSE, round = NULL, outputStatistics = stats, file = "f22_reconv_target_0.5.mz")
+  calcOutput("ReconversionTargetsBTC2", cells = cells,
+             aggregate = "cluster", round = roundArea,
+             outputStatistics = stats, file = paste0("f22_reconv_target_", ctype, ".mz"))
 
   # intact and non-intact forest (Grassi et al. 2023), not read by GAMS, for reporting
   calcOutput("ForestGrassi2023", aggregate = FALSE, round = NULL,
