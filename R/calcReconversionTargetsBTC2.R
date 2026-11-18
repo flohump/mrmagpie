@@ -5,8 +5,9 @@
 #'
 #' The regional targets are distributed to the cells of each AgMIP region in descending order of the
 #' restoration priority (RRp) until the target is met. A cell provides at most its pool area, and at
-#' most its 2020 cropland and pasture (pool C) or secondary forest (pool D). A warning lists regions
-#' where this land is smaller than the target.
+#' most its 2020 cropland and pasture (pool C) or its 2020 secondary forest outside WDPA and the BTC2
+#' conservation layer (pool D), since protected forest is not harvested in MAgPIE. A warning lists
+#' regions where this land is smaller than the target.
 #'
 #' @param cells "lpjcell" (67420 cells)
 #' @return List with a magpie object (Mha) at 0.5 degree land cells
@@ -27,9 +28,13 @@ calcReconversionTargetsBTC2 <- function(cells = "lpjcell") {
   land <- collapseDim(calcOutput("LanduseInitialisation", aggregate = FALSE, cellular = TRUE, nclasses = "seven",
                                  input_magpie = TRUE, cells = cells, years = "y2020"), dim = 2)
   land <- land[getItems(pools, dim = 1), , ]
+  wdpa <- calcOutput("ProtectedAreaBaseline", aggregate = FALSE, nclasses = "seven",
+                     cells = cells, magpie_input = TRUE)[getItems(pools, dim = 1), "y2020", "WDPA.secdforest"]
+  btc2 <- calcOutput("ConservationBTC2", aggregate = FALSE, cells = cells)[getItems(pools, dim = 1), , "BTC2.secdforest"]
+  secdFree <- pmax(0, as.vector(land[, , "secdforest"]) - as.vector(wdpa) - as.vector(btc2))
 
   capacity <- list(ag = pmin(as.vector(pools[, , "poolC"]), as.vector(dimSums(land[, , c("crop", "past")], dim = 3))),
-                   forest = pmin(as.vector(pools[, , "poolD"]), as.vector(land[, , "secdforest"])))
+                   forest = pmin(as.vector(pools[, , "poolD"]), secdFree))
   poolOf <- c(ag = "poolC", forest = "poolD")
 
   mapping <- toolGetMapping("regionmappingAgMIP.csv", type = "regional", where = "mappingfolder")
