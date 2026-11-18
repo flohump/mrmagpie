@@ -30,7 +30,8 @@ calcReconversionTargetsBTC2 <- function(cells = "lpjcell") {
   land <- land[getItems(pools, dim = 1), , ]
   wdpa <- calcOutput("ProtectedAreaBaseline", aggregate = FALSE, nclasses = "seven",
                      cells = cells, magpie_input = TRUE)[getItems(pools, dim = 1), "y2020", "WDPA.secdforest"]
-  btc2 <- calcOutput("ConservationBTC2", aggregate = FALSE, cells = cells)[getItems(pools, dim = 1), , "BTC2.secdforest"]
+  btc2 <- calcOutput("ConservationBTC2", aggregate = FALSE,
+                     cells = cells)[getItems(pools, dim = 1), , "BTC2.secdforest"]
   secdFree <- pmax(0, as.vector(land[, , "secdforest"]) - as.vector(wdpa) - as.vector(btc2))
 
   capacity <- list(ag = pmin(as.vector(pools[, , "poolC"]), as.vector(dimSums(land[, , c("crop", "past")], dim = 3))),
