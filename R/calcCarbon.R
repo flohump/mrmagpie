@@ -124,13 +124,15 @@ calcCarbon <- function(lpjml = c(natveg = "LPJmL4_for_MAgPIE_44ac93de", crop = "
     sets = c("x.y.iso", "year", "data")
   )
 
-  weight[, , getNames(carbonStocks)] <- landArea
+  weight[, , getNames(carbonStocks)] <- landArea + 10^-10
+  # forest types: the 1995 potential forest area for all years, so a cell crossing the forest threshold does not shift
+  # the cluster density; the tiny land-area term decides only in clusters without potential forest
   forestLand <- c("primforest", "secdforest", "forestry")
-  weight[, getYears(carbonStocks), forestLand] <- potForestArea[, getYears(carbonStocks), ]
+  weight[, , forestLand] <- setYears(potForestArea[, "y1995", ], NULL) + 10^-15 * landArea
 
   return(list(
     x = carbonStocks,
-    weight = weight + 10^-10,
+    weight = weight,
     unit = "t per ha",
     description = "Carbon in tons per hectar for different land use types.",
     note = ifelse(grasssoil, "Pasture soil carbon stocks are based on allcrop run.",
