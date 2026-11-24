@@ -16,7 +16,7 @@
 calcPlantationClimateClass <- function(cells = "lpjcell") {
   koeppen <- calcOutput("ClimateClass", datasource = "koeppen", years = "y2001", aggregate = FALSE)
   landIni <- calcOutput("LanduseInitialisation", nclasses = "seven", aggregate = FALSE, cellular = TRUE,
-                        cells = cells, input_magpie = TRUE, selectyears = "y1995")
+                        cells = cells, input_magpie = TRUE)[, 1995, ]
   plantShare <- calcOutput("PlantedForest", aggregate = FALSE)
   iso <- getItems(landIni, dim = "iso", full = TRUE)
   share <- as.vector(plantShare)[match(iso, getItems(plantShare, dim = 1))]
