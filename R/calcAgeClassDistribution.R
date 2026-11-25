@@ -10,7 +10,8 @@
 #' classes (each split 50/50 into two adjacent classes; all classes >=140 yr, i.e. GAMI
 #' `140-160 ... >299`, collapse into `class15`, the mature bin routed to `acx` in module 28).
 #' Where GAMI reports no forest but GFAD does, the GFAD age shape is retained (area-conserving).
-#' The GAMI ages are moved back from \code{gamiYear} to MAgPIE's start year 1995 (\code{.backcast}).
+#' The GAMI ages are moved back from \code{gamiYear} to MAgPIE's start year 1995 (\code{.backcast}), and the
+#' classes of each country with an inventory age structure (mrland \code{calcForestAgeInventory}) are fitted to it.
 #'
 #' For both datasets, forest of the 1995 land initialisation that the age map does not cover
 #' (dry woodland and sparse boreal forest outside the GFAD forest mask, forest cleared
@@ -102,6 +103,10 @@ calcAgeClassDistribution <- function(cells = "lpjcell", dataset = "GFAD", gamiYe
   excess <- pmax(forest - as.numeric(dimSums(out, dim = 3)), 0)
   out[cellIt, , "class15"] <- out[cellIt, , "class15"] + excess
   descr <- paste0(descr, "; forest of the 1995 land initialisation beyond the age map in class15")
+  if (dataset == "GAMI") {
+    out <- .inventoryFit(out, calcOutput("ForestAgeInventory", aggregate = FALSE))
+    descr <- paste0(descr, "; countries with an inventory age structure fitted to it")
+  }
 
   return(list(x = out,
               weight = NULL,
@@ -139,5 +144,33 @@ calcAgeClassDistribution <- function(cells = "lpjcell", dataset = "GFAD", gamiYe
   shifted <- cbind(halves[, -seq_len(years / 5), drop = FALSE], matrix(0, nrow(halves), years / 5))
   out <- cbind(shifted[, seq(1, 27, 2), drop = FALSE] + shifted[, seq(2, 28, 2), drop = FALSE], shape15[, 15])
   colnames(out) <- colnames(shape15)
+  return(out)
+}
+
+# Fit the class shares of each country to its target (shares of the country's forest, summing to the share with
+# a target; the rest keeps the current shares): iterative proportional fitting over the country's cells, every
+# cell keeps its total. A class without area in the country gets a seed so that it can take its share.
+.inventoryFit <- function(out, target) {
+  iso <- getItems(out, dim = "iso", full = TRUE)
+  classes <- getNames(out)
+  m <- matrix(as.numeric(out), ncol = length(classes))
+  for (country in intersect(getItems(target, 1), unique(iso))) {
+    t <- as.numeric(target[country, , classes])
+    rows <- which(iso == country)
+    y <- m[rows, , drop = FALSE]
+    total <- rowSums(y)
+    if (sum(t) <= 0 || sum(total) <= 0) next
+    goal <- t + (1 - sum(t)) * colSums(y) / sum(y)
+    empty <- colSums(y) <= 0 & goal > 0
+    y[, empty] <- 1e-9 * total
+    for (i in 1:200) {
+      share <- colSums(y) / sum(y)
+      y <- sweep(y, 2, ifelse(share > 0, goal / share, 0), "*")
+      y <- y * total / pmax(rowSums(y), 1e-12)
+      if (max(abs(colSums(y) / sum(y) - goal)) < 1e-6) break
+    }
+    m[rows, ] <- y
+  }
+  out[, , ] <- m
   return(out)
 }
