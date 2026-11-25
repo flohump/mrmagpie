@@ -33,7 +33,8 @@ age-structure change. GAMI's 12 twenty-year classes are mapped onto the 15 GFAD 
 classes (each split 50/50 into two adjacent classes; all classes >=140 yr, i.e. GAMI
 `140-160 ... >299`, collapse into `class15`, the mature bin routed to `acx` in module 28).
 Where GAMI reports no forest but GFAD does, the GFAD age shape is retained (area-conserving).
-The GAMI ages are moved back from \code{gamiYear} to MAgPIE's start year 1995 (\code{.backcast}).
+The GAMI ages are moved back from \code{gamiYear} to MAgPIE's start year 1995 (\code{.backcast}), and the
+classes of each country with an inventory age structure (mrland \code{calcForestAgeInventory}) are fitted to it.
 
 For both datasets, forest of the 1995 land initialisation that the age map does not cover
 (dry woodland and sparse boreal forest outside the GFAD forest mask, forest cleared
