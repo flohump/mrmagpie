@@ -223,6 +223,10 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
              aggregate = "cluster", round = roundArea,
              outputStatistics = stats, file = paste0("f22_reconv_target_", ctype, ".mz"))
 
+  # BTC2 rehabilitation targets of degraded agricultural land, not read by GAMS, for reporting
+  calcOutput("ReconversionTargetsBTC2", cells = cells, pools = "rehab",
+             aggregate = FALSE, round = NULL, outputStatistics = stats, file = "rehab_target_0.5.mz")
+
   # intact and non-intact forest (Grassi et al. 2023), not read by GAMS, for reporting
   calcOutput("ForestGrassi2023", aggregate = FALSE, round = NULL,
              outputStatistics = stats, file = "forest_grassi2023_0.5.mz")
