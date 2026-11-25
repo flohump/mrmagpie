@@ -7,9 +7,7 @@
 calcAgeClassDistribution(
   cells = "lpjcell",
   dataset = "GFAD",
-  gamiYear = "y2010",
-  youngCorrection = TRUE,
-  backcast = TRUE
+  gamiYear = "y2010"
 )
 }
 \arguments{
@@ -19,12 +17,6 @@ calcAgeClassDistribution(
 
 \item{gamiYear}{GAMI reference year when \code{dataset = "GAMI"}: "y2010" (default, matches
 the GFAD vintage) or "y2020"}
-
-\item{youngCorrection}{with \code{dataset = "GAMI"}: move young forest that does not regrow to the
-older classes, see \code{.youngCorrection} (default TRUE)}
-
-\item{backcast}{with \code{dataset = "GAMI"}: move the ages of the age map back from \code{gamiYear} to
-MAgPIE's start year 1995, see \code{.backcast} (default TRUE)}
 }
 \value{
 magpie object in cluster resolution
@@ -41,11 +33,12 @@ age-structure change. GAMI's 12 twenty-year classes are mapped onto the 15 GFAD 
 classes (each split 50/50 into two adjacent classes; all classes >=140 yr, i.e. GAMI
 `140-160 ... >299`, collapse into `class15`, the mature bin routed to `acx` in module 28).
 Where GAMI reports no forest but GFAD does, the GFAD age shape is retained (area-conserving).
+The GAMI ages are moved back from \code{gamiYear} to MAgPIE's start year 1995 (\code{.backcast}).
 
 For both datasets, forest of the 1995 land initialisation that the age map does not cover
 (dry woodland and sparse boreal forest outside the GFAD forest mask, forest cleared
-between 1995 and the 2010 age map, and with \code{backcast} the land of stands younger
-than 15 yr in 2010) is added to \code{class15}, so that the age structure
+between 1995 and the age map, and with GAMI the land of stands younger than the gap between 1995 and
+\code{gamiYear}) is added to \code{class15}, so that the age structure
 describes the forest MAgPIE starts with, with the uncovered part treated as mature.
 }
 \examples{

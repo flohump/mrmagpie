@@ -14,8 +14,8 @@ magpie object in cellular resolution with the plantation area as weight
 }
 \description{
 Koeppen-Geiger climate class shares of the timber plantation estate. The cell's class shares are
-weighted by its plantation area in 1995 (forestry area of the land initialisation times the country's share of
-plantation forest in planted forest, FRA 2025); clusters without plantations get land-area-weighted shares.
+weighted by its plantation area in 1995 (forestry area of the land initialisation times the share of
+\code{calcPlantationShare}); clusters without plantations get land-area-weighted shares.
 }
 \examples{
 \dontrun{

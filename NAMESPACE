@@ -39,6 +39,7 @@ importFrom(magclass,
   ndata,
   new.magpie,
   read.magpie,
+  setNames,
   setYears,
   where,
   wrap
