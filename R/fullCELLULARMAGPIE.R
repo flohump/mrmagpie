@@ -209,12 +209,18 @@ fullCELLULARMAGPIE <- function(rev = numeric_version("0.1"), dev = "",
              aggregate = "cluster", round = roundArea,
              outputStatistics = stats, file = paste0("wdpa_baseline_", ctype, ".mz"))
 
-  # conservation priority areas including the BTC2 option
-  calcOutput("ConservationPrioritiesBTC2", cells = cells,
+  calcOutput("ConservationPriorities", nclasses = "seven", cells = cells,
              aggregate = FALSE, round = NULL, outputStatistics = stats, file = "consv_prio_areas_0.5.mz")
-  calcOutput("ConservationPrioritiesBTC2", cells = cells,
+  calcOutput("ConservationPriorities", nclasses = "seven", cells = cells,
              aggregate = "cluster", round = roundArea,
              outputStatistics = stats, file = paste0("consv_prio_areas_", ctype, ".mz"))
+
+  # BTC2 conservation option in its own file, so that MAgPIE versions without it still read the file above
+  calcOutput("ConservationBTC2", cells = cells,
+             aggregate = FALSE, round = NULL, outputStatistics = stats, file = "consv_prio_btc2_0.5.mz")
+  calcOutput("ConservationBTC2", cells = cells,
+             aggregate = "cluster", round = roundArea,
+             outputStatistics = stats, file = paste0("consv_prio_btc2_", ctype, ".mz"))
 
   # BTC2 reconversion targets of agricultural land and managed forest
   calcOutput("ReconversionTargetsBTC2", cells = cells,
